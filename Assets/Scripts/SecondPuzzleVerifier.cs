@@ -25,7 +25,12 @@ public class SecondPuzzleVerifier : MonoBehaviour
 
     [Header("Bridge")]
     [SerializeField] private GameObject bridge;
+
+    [Header("Particles")]
     [SerializeField] private GameObject splash;
+    [SerializeField] private Transform splashPos;
+    [SerializeField] private GameObject waterWave;
+    [SerializeField] private Transform waterWavePos;
 
     [Header("Verifiers")]
     public bool puzzleDone;
@@ -53,8 +58,13 @@ public class SecondPuzzleVerifier : MonoBehaviour
 
                 obstacle.SetActive(false);
 
-                GameObject splashVFX = Instantiate(splash, bridge.transform);
-                bridge.SetActive(true);
+                GameObject splashVFX = Instantiate(splash, splashPos);
+                splashVFX.transform.localScale = new Vector3(10,10,10);
+
+                GameObject waterWaveVFX = Instantiate (waterWave, waterWavePos);
+                waterWaveVFX.transform.localScale = new Vector3 (10,10,10);
+
+                //bridge.SetActive(true);
                 puzzleDone = true;
 
                 interaction.buttons.SetActive(false);
