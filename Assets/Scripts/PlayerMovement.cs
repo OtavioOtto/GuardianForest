@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+
         sprintSpeed = moveSpeed * 2;
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;

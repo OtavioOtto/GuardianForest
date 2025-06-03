@@ -20,7 +20,7 @@ public class TargetsPuzzleHandler : MonoBehaviour
     [SerializeField] private bool stopTimer;
 
     public bool puzzleComplete;
-    private bool activateTimer;
+    public bool activateTimer;
     private bool playerInside;
     private float currentTime;
     private bool puzzleStart;
@@ -58,7 +58,16 @@ public class TargetsPuzzleHandler : MonoBehaviour
         if (stopTimer)
         {
             if (!puzzleComplete)
+            {
                 avisoTxt.SetActive(true);
+
+                int count = gameObject.transform.childCount;
+
+                for (int i = 0; i < count; i++)
+                {
+                    gameObject.transform.GetChild(i).GetComponentInChildren<TargetHit>().hit = false;
+                }
+            }
             else
             {
                 bossObstacle.SetActive(false);
@@ -73,12 +82,7 @@ public class TargetsPuzzleHandler : MonoBehaviour
             slider.gameObject.SetActive(false);
             stopTimer = false;
 
-            int count = gameObject.transform.childCount;
-
-            for (int i = 0; i < count; i++)
-            {
-                gameObject.transform.GetChild(i).GetComponentInChildren<TargetHit>().hit = false;
-            }
+            
         }
     }
 

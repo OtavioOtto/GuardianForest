@@ -5,31 +5,29 @@ using UnityEngine;
 public class SpearAddOns : MonoBehaviour
 {
     public int damage;
-    [SerializeField] private Rigidbody rb;
+    private Rigidbody rb;
     private CapsuleCollider spearCollider;
-    public SpearShooter shooter;
+    private SpearShooter shooter;
     public GameObject trail;
-    public GameObject spearPivot;
     public bool isHit;
-    public PlayerMovement player;
+    private PlayerMovement player;
     public bool hasHit;
+    private GameObject playerObj;
     void Start()
     {
+        if(GetComponent<Rigidbody>() != null)
+            rb = GetComponent<Rigidbody>();
         spearCollider = gameObject.GetComponent<CapsuleCollider>();
         isHit = false;
+        playerObj = GameObject.Find("Player");
     }
 
     private void Update()
     {
-        if(!shooter.playerHasSpear && !isHit && !shooter.isReturning)
-            transform.forward = Vector3.Slerp(transform.forward, rb.linearVelocity.normalized, Time.deltaTime);
-        if (shooter.playerHasSpear && !player.isMoving)
-        {
-            Quaternion targetRotation = Quaternion.Euler(Camera.main.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
-        }
-        if (shooter.playerHasSpear && player.isMoving)
-            transform.rotation = new Quaternion(transform.rotation.x, Camera.main.transform.rotation.y, Camera.main.transform.rotation.z, Camera.main.transform.rotation.w);
+        if(player == null)
+            player = playerObj.GetComponent<PlayerMovement>();
+        if(shooter == null)
+            shooter = playerObj.GetComponent<SpearShooter>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,11 +37,10 @@ public class SpearAddOns : MonoBehaviour
             isHit = true;
             spearCollider.enabled = false;
             rb.isKinematic = true;
-            spearPivot.transform.parent = other.transform;
-            
-            if (other.gameObject.GetComponent<EnemyHealtManager>() != null)
+            transform.parent = other.transform;
+            if (other.gameObject.GetComponent<BossEnemyAI>() != null)
             {
-                EnemyHealtManager enemy = other.gameObject.GetComponent<EnemyHealtManager>();
+                BossEnemyAI enemy = other.gameObject.GetComponent<BossEnemyAI>();
                 enemy.TakeDamage(damage);
                 trail.GetComponent<TrailRenderer>().enabled = false;
             }
@@ -61,14 +58,13 @@ public class SpearAddOns : MonoBehaviour
         if (!other.CompareTag("Player") && player.isNearAttack) 
         {
             hasHit = false;
-            if (other.gameObject.GetComponent<EnemyHealtManager>() != null)
+            if (other.gameObject.GetComponent<BossEnemyAI>() != null)
             {
                 if (!hasHit)
                 {
                     hasHit = true;
-                    EnemyHealtManager enemy = other.gameObject.GetComponent<EnemyHealtManager>();
+                    BossEnemyAI enemy = other.gameObject.GetComponent<BossEnemyAI>();
                     enemy.TakeDamage(damage);
-                    trail.GetComponent<TrailRenderer>().enabled = false;
                 }
             }
 
@@ -79,7 +75,6 @@ public class SpearAddOns : MonoBehaviour
                     hasHit = true;
                     BaseEnemyAI enemy = other.gameObject.GetComponent<BaseEnemyAI>();
                     enemy.TakeDamage(damage);
-                    trail.GetComponent<TrailRenderer>().enabled = false;
                 }
             }
         }

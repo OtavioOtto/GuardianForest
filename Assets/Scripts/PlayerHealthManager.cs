@@ -14,7 +14,7 @@ public class PlayerHealthManager : MonoBehaviour
 
     [Header("Regeneration Settings")]
     [SerializeField] private float timeBeforeRegen = 10f;
-    [SerializeField] private float regenRate = 5f;
+    [SerializeField] private float regenRate = 20f;
     [SerializeField] private float regenInterval = 0.1f;
     private float timeSinceLastDamage;
     private bool isRegenerating;

@@ -10,7 +10,6 @@ public class DeerReleaser : MonoBehaviour
     public GameObject deer;
     public GameObject secondPuzzleObstacle;
     public GameObject secondPuzzleEnemies;
-    public GameObject warningTxt;
     [SerializeField] private string eachHole;
     [Header("First Hole")]
     [SerializeField] private GameObject firstHoleLimits;
@@ -49,8 +48,6 @@ public class DeerReleaser : MonoBehaviour
             firstStone.GetComponent<Outline>().enabled = false;
             firstTrapDoor.GetComponent<TrapdoorController>().ToggleTrapdoor();
 
-            //colocar particula de terra
-
             secondHoleLimits.SetActive(true);
             secondStone.SetActive(true);
             secondTrapDoor.GetComponent<TrapdoorController>().ToggleTrapdoor();
@@ -62,8 +59,6 @@ public class DeerReleaser : MonoBehaviour
             secondStone.GetComponent<Outline>().enabled = false;
             secondTrapDoor.GetComponent<TrapdoorController>().ToggleTrapdoor();
 
-            //colocar particula de terra
-
             thirdHoleLimits.SetActive(true);
             thirdStone.SetActive(true);
             thirdTrapDoor.GetComponent<TrapdoorController>().ToggleTrapdoor();
@@ -74,23 +69,13 @@ public class DeerReleaser : MonoBehaviour
             thirdStone.GetComponent<Outline>().enabled = false;
             thirdTrapDoor.GetComponent<TrapdoorController>().ToggleTrapdoor();
 
-            //colocar particula de terra
-
             cageTransf.position = new Vector3(cageT.position.x, cageT.position.y + 0.8f, cageT.position.z);
             Destroy(cage);
             GameObject deerGO = Instantiate(deer, cageTransf.position, cageTransf.rotation);
             deerGO.transform.localScale = new Vector3(1.8f, 1.8f, 1.8f);
             Destroy(secondPuzzleObstacle);
             secondPuzzleEnemies.SetActive(true);
-            warningTxt.SetActive(true);
-            StartCoroutine(DestroyText());
         }
         
-    }
-
-    IEnumerator DestroyText() 
-    {
-        yield return new WaitForSeconds(3.5f);
-        warningTxt.SetActive(false);
     }
 }

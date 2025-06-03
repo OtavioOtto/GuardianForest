@@ -21,6 +21,7 @@ public class SecondPuzzleVerifier : MonoBehaviour
     [SerializeField] private GameObject stumpOne;
     [SerializeField] private GameObject stumpTwo;
     [SerializeField] private GameObject stumpThree;
+    [SerializeField] private GameObject hints;
     [SerializeField] private GameObject obstacle;
 
     [Header("Bridge")]
@@ -33,12 +34,14 @@ public class SecondPuzzleVerifier : MonoBehaviour
     [SerializeField] private Transform waterWavePos;
 
     [Header("Verifiers")]
+    public int attempts;
     public bool puzzleDone;
 
     private BridgeInteractionHandler interaction;
 
     private void Start()
     {
+        attempts = 0;
         puzzleDone = false;
         interaction = gameObject.GetComponent<BridgeInteractionHandler>();
     }
@@ -56,6 +59,8 @@ public class SecondPuzzleVerifier : MonoBehaviour
                 stumpTwo.SetActive(false);
                 stumpThree.SetActive(false);
 
+                hints.SetActive(false);
+
                 obstacle.SetActive(false);
 
                 GameObject splashVFX = Instantiate(splash, splashPos);
@@ -64,7 +69,7 @@ public class SecondPuzzleVerifier : MonoBehaviour
                 GameObject waterWaveVFX = Instantiate (waterWave, waterWavePos);
                 waterWaveVFX.transform.localScale = new Vector3 (10,10,10);
 
-                //bridge.SetActive(true);
+                bridge.SetActive(true);
                 puzzleDone = true;
 
                 interaction.buttons.SetActive(false);
@@ -104,6 +109,7 @@ public class SecondPuzzleVerifier : MonoBehaviour
         logThreeOptionOne.SetActive(false);
         logThreeOptionTwo.SetActive(false);
         logThreeOptionThree.SetActive(false);
+        attempts++;
     }
 
     void LogsHandler(int log) 

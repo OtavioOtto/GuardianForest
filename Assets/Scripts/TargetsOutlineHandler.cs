@@ -8,7 +8,7 @@ public class TargetsOutlineHandler : MonoBehaviour
 
     private TargetHit hit;
     private TargetsPuzzleHandler handler;
-    private bool playerInside;
+    public bool playerInside;
     void Start()
     {
         playerInside = false;

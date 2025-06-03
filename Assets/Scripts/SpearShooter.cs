@@ -6,10 +6,8 @@ public class SpearShooter : MonoBehaviour
     [SerializeField] private Transform cam;
     [SerializeField] private Transform curvePoint;
     [SerializeField] private GameObject spear;
-    [SerializeField] private Transform spearPivot;
-    [SerializeField] private GameObject trail;
+    [SerializeField] private GameObject spearPrefab;
     [SerializeField] private Rigidbody spearRB;
-    [SerializeField] private CapsuleCollider spearCol;
     [SerializeField] private Transform rightHand;
     [SerializeField] private Animator anim;
 
@@ -23,68 +21,72 @@ public class SpearShooter : MonoBehaviour
     public bool playerHasSpear;
     [SerializeField] private float time;
 
-    public SpearAddOns addOns;
+    private GameObject spearInstance;
+
+    private SpearAddOns addOns;
 
     private void Start()
     {
-        trail.GetComponent<TrailRenderer>().enabled = false;
         playerHasSpear = true;
-        spearPivot.transform.localPosition = new Vector3(0, 0, 0);
-        spear.transform.rotation = rightHand.rotation;
     }
 
     void Update()
     {
         if (Input.GetMouseButtonDown(1) && !playerHasSpear && Time.timeScale != 0 && !isReturning)
             ReturningMethod();
-        if (isReturning) {
+        if (isReturning)
+        {
             if (time < 1.0f)
             {
-                spearPivot.transform.position = ReturnCalculus(time, old_pos, curvePoint.position, rightHand.position);
+                spearInstance.transform.position = ReturnCalculus(time, old_pos, curvePoint.position, rightHand.position);
                 time += Time.deltaTime;
             }
             else
                 ResetSpear();
         }
 
-        if (playerHasSpear)
-            spearCol.enabled = false;
-            
+        if(addOns != null)
+            if (!playerHasSpear && !addOns.isHit && !isReturning && !anim.GetBool("atacou") && !spear.activeSelf)
+                spearInstance.transform.forward = Vector3.Slerp(transform.forward, spearInstance.GetComponent<Rigidbody>().linearVelocity.normalized, Time.deltaTime);
+
     }
 
-    public void ShootingMethod() 
+    public void ShootingMethod()
     {
+        spear.SetActive(false);
+
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        Vector3 direction = ray.direction.normalized;
+
+        Vector3 spawnPos = (cam.position + rightHand.position) * 0.5f;
+
+        spearInstance = Instantiate(spearPrefab, spawnPos, Quaternion.LookRotation(direction));
+        spearRB = spearInstance.GetComponent<Rigidbody>();
+        spearRB.AddForce(spearInstance.transform.forward * throwForce, ForceMode.Impulse);
+
         playerHasSpear = false;
-        spearCol.enabled = true;
         isReturning = false;
-        trail.GetComponent<TrailRenderer>().enabled = true;
-        spearPivot.transform.parent = null; // Detach pivot instead of spear
-        spear.transform.rotation = Camera.main.transform.rotation;
-        spearRB.isKinematic = false;
-        spearRB.AddForce(Camera.main.transform.TransformDirection(Vector3.forward) * throwForce, ForceMode.Impulse);
+
+        addOns = spearInstance.GetComponent<SpearAddOns>();
     }
 
     void ReturningMethod() 
     {
+        spearRB = spearInstance.GetComponent<Rigidbody>();
         spearRB.isKinematic = false;
-        spearCol.enabled = false;
-        spear.GetComponentInChildren<CapsuleCollider>().enabled = false;
-        trail.GetComponent<TrailRenderer>().enabled = false;
+        spearInstance.GetComponent<CapsuleCollider>().enabled = false;
+        spearInstance.GetComponentInChildren<TrailRenderer>().enabled = false;
         time = 0.0f;
-        old_pos = spearPivot.transform.position;
+        old_pos = spearInstance.transform.position;
         isReturning = true;
         spearRB.linearVelocity = Vector3.zero;
         
     }
     void ResetSpear()
     {
+        Destroy(spearInstance);
+        spear.SetActive(true);
         isReturning = false;
-        spearPivot.transform.parent = rightHand;
-        spearPivot.transform.localPosition = new Vector3(0, 0, 0);
-        spear.transform.rotation = rightHand.rotation;
-        spearRB.isKinematic = true;
-        spearCol.enabled = true;
-        trail.GetComponent<TrailRenderer>().enabled = false;
         playerHasSpear = true;
         addOns.isHit = false;
         anim.SetBool("lancou", false);

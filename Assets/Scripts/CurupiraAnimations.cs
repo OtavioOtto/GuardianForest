@@ -7,7 +7,6 @@ public class CurupiraAnimations : MonoBehaviour
     [SerializeField] private SpearShooter shooter;
     [SerializeField] private Animator anim;
     [SerializeField] private CapsuleCollider spear;
-    [SerializeField] private SpearAddOns addOns;
     private bool jump;
     private void Start()
     {
@@ -78,7 +77,6 @@ public class CurupiraAnimations : MonoBehaviour
         shooter.playerHasSpear = true;
         movement.isNearAttack = false;
         movement.canPlayerMove = true;
-        addOns.hasHit = false;
     }
 
     public void ShootingMethod()

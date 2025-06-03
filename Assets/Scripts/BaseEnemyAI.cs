@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -12,7 +11,6 @@ public class BaseEnemyAI : MonoBehaviour
     [SerializeField] private float currentHealth;
     [SerializeField] private Slider slider;
     [SerializeField] private GameObject spear;
-    [SerializeField] private GameObject spearPivot;
     [SerializeField] private BoxCollider axe;
     [SerializeField] private PlayerHealthManager playerHp;
     [SerializeField] private SpearShooter shooter;
@@ -30,7 +28,8 @@ public class BaseEnemyAI : MonoBehaviour
 
     [Header("States")]
     [SerializeField] private float sightRange, attackRange;
-    [SerializeField] private bool playerInSightRange, playerInAttackRange, isDead;
+    [SerializeField] private bool playerInAttackRange, isDead;
+    public bool playerInSightRange;
 
     [Header("Vision")]
     [SerializeField] private LayerMask layersToIgnore;
@@ -195,7 +194,7 @@ public class BaseEnemyAI : MonoBehaviour
     {
         if (!shooter.playerHasSpear)
         {
-            spearPivot.transform.parent = null;
+            spear.transform.parent = null;
             spear.GetComponent<Rigidbody>().isKinematic = false;
             spear.GetComponent<CapsuleCollider>().enabled = true;
         }
